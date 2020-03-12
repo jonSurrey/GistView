@@ -19,10 +19,6 @@ class GistsListProvider: ProviderDelegate {
     var path: String = "gists/public"
     var headers: HTTPHeaders?
     var parameters: Parameters? = ["page": 0]
-    
-    init() {
-       
-    }
 }
 
 class GistsDetailProvider: ProviderDelegate {

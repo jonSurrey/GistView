@@ -11,10 +11,18 @@ import Foundation
 struct Gist:Codable {
     
     let id: String?
-    let description: String?
-    let createdAt: String?
-    var files: [String:GistFile]?
     let owner: Owner?
+    var files: [String:GistFile]?
+    let createdAt: String?
+    let description: String?
+    
+    init(_ id: String = nil, _ owner: Owner? = nil, _ files: [String:GistFile]? = nil, _ createdAt: String? = nil, _ description: String? = nil) {
+        self.id = id
+        self.owner = owner
+        self.files = files
+        self.createdAt = createdAt
+        self.description = description
+    }
     
     enum CodingKeys: String, CodingKey {
         case id

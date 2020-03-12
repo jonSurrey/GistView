@@ -14,6 +14,14 @@ class StorageMock: StorageDelegate {
     private var cache:[Gist]     = []
     private var favorites:[Gist] = []
     
+    init(cache: [Gist]) {
+        self.cache = cache
+    }
+    
+    init(favorites: [Gist]) {
+        self.favorites = favorites
+    }
+    
     func clearCache() {
         cache = []
     }
