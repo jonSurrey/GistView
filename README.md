@@ -28,8 +28,12 @@ This project makes use of some third parties libs for the Network layer and nati
 https://api.github.com/
 
 ### Tests
- - MainViewTest
- - FavoriteViewTest
- 
+ - StorageTests
+ - MainViewTests
+ - MainPresenterTests
+ - FavoritesPresenterTests
+
  ### Improvements
-  - Make search feature for gist owner name inside Gist List
+  - Make search feature by gist owner name inside Gist List
+  - Make request for reatriving full gist details in the DetailsViewController
+  - Improve UI
