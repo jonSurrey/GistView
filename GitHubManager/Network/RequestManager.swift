@@ -39,8 +39,7 @@ class RequestManager<T:Codable>{
         }
         
         printAccess(to: provider)
-        //http://www.mocky.io/v2/5e6994c42f000085cad8b490 "\(BASE_URL)\(provider.path)"
-        Alamofire.request("http://www.mocky.io/v2/5e6994c42f000085cad8b490", method: .get, parameters: nil, headers: provider.headers).responseJSON { (response) in
+        Alamofire.request("\(BASE_URL)\(provider.path)", method: .get, parameters: nil, headers: provider.headers).responseJSON { (response) in
             self.printResult(response)
             callback(self.resultBlock(response))
         }
@@ -75,7 +74,7 @@ class RequestManager<T:Codable>{
         }
     }
     
-    // Prints the request
+    /// Prints the request
     private static func printAccess(to provider: ProviderDelegate){
         #if Release
             return

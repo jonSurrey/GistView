@@ -14,7 +14,7 @@ class FavoriteViewController: UIViewController {
     /// The controller's view, instance of MainView
     private unowned var _view:MainView { return self.view as! MainView }
     
-    ///
+    // ViewModel datasource for the UITableView
     private var items: [GistItem] = [] {
         didSet {
             _view.tableView.reloadData()
@@ -50,6 +50,7 @@ class FavoriteViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension FavoriteViewController: UITableViewDelegate, UITableViewDataSource, GistItemDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -73,6 +74,7 @@ extension FavoriteViewController: UITableViewDelegate, UITableViewDataSource, Gi
     }
 }
 
+// MARK: - MainView implementation
 extension FavoriteViewController: MainViewDelegate {
     
     func showFeedback(message: String) {

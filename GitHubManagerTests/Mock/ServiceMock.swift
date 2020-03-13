@@ -7,12 +7,25 @@
 //
 
 import Foundation
+import Alamofire
 @testable import GistViewer
 
-class ServiceMock: GistService {
+class ProviderMock: ProviderDelegate {
+    var path: String = ""
+    var headers: HTTPHeaders?
+    var parameters: Parameters?
+}
 
-    ///
+class ServiceMock: GistService {
+    
+    private var result: [Gist]
+    
+    init(result: [Gist]) {
+        self.result = result
+        super.init(ProviderMock())
+    }
+    
     override func getGistList(page: Int = 1) {
-        self.delegate?.didReceiveGists([])
+        self.delegate?.didReceiveGists(result)
     }
 }

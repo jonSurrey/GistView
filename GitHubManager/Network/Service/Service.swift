@@ -8,14 +8,11 @@
 
 import Foundation
 
-// MARK: -
+// MARK: - GistServiceDelegate
 protocol GistServiceDelegate: class {
     
     /// Notifies the result of the gists
     func didReceiveGists(_ gists:[Gist])
-    
-    /// Notifies the result of the details of a gist
-    func didReceiveDetailOf(_ gist:Gist)
     
     /// Notifies that an error occured
     func onRequestError(_ error:String)
@@ -24,18 +21,10 @@ protocol GistServiceDelegate: class {
     func noInternetConection()
 }
 
-// MARK: -
-extension GistServiceDelegate {
-    
-    func didReceiveGists(_ gists:[Gist]) { }
-    
-    func didReceiveDetailOf(_ gist:Gist) { }
-}
-
-// MARK: -
+// MARK: - GistService
 class GistService {
     
-    ///
+    /// The provider with the request information
     private var provider: ProviderDelegate
     
     /// Callback to notify the caller of the request
@@ -44,10 +33,10 @@ class GistService {
     init(_ provider: ProviderDelegate) {
         self.provider = provider
     }
-    
-    ///
+
+    /// Performs the request to get the list of gists
     func getGistList(page: Int = 1) {
-        provider.parameters = ["page":page]
+        provider.parameters = ["page": page]
         RequestManager<[Gist]>.get(to: provider) { (result) in
             switch result {
                 case .success(let result):

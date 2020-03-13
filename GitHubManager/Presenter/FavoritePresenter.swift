@@ -8,39 +8,44 @@
 
 import Foundation
 
+// MARK: - FavoriteDelegate
 protocol FavoriteDelegate {
+    
+    /// Checks if the given GistItem should be favorited or not
     func favorite(_ item: GistItem)
 }
 
+// MARK: - FavoritePresenter
 class FavoritePresenter: MainPresenterDelegate {
     
-    ///
-    private var gists:[Gist] = []
+    /// The list of gists to be used as datasource. It should be private but we make it public for testing purposes
+    var gists:[Gist] = []
     
     /// Manager for the  storage
     private var storage: StorageDelegate
     
-    ///
-    private weak var viewController: MainViewDelegate?
+    /// Instance of the view so we can update it
+    private weak var view: MainViewDelegate?
     
     init(_ storage: StorageDelegate) {
         self.storage = storage
     }
     
-    func attach(to viewController: MainViewDelegate) {
-        self.viewController = viewController
+    /// Binds a view  to this presenter
+    func attach(to view: MainViewDelegate) {
+        self.view = view
     }
     
     func selectGist(at position: Int) {
         let gist = gists[position]
-        viewController?.goToGistDetails(gist)
+        view?.goToGistDetails(gist)
     }
     
     func loadFavorites() {
         let items = storage.loadFavorites().map { GistItem($0, isFavorite: true) }
-        viewController?.reloadGistList(items)
+        view?.reloadGistList(items)
         if items.isEmpty {
-            viewController?.showFeedback(message: "You have no favorites yet")
+            view?.showFeedback(message: "You have no favorites yet")
         }
     }
     
@@ -53,6 +58,6 @@ class FavoritePresenter: MainPresenterDelegate {
             item.isFavorite = false
             storage.removeFromFavorite(gist)
         }
-        viewController?.updateGistList()
+        view?.updateGistList()
     }
 }

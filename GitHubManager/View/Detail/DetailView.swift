@@ -33,7 +33,7 @@ class DetailView: UIView {
          return label
      }()
     
-    // The user's name
+    // The user's file names
     let gistType: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -101,15 +101,5 @@ extension DetailView{
             gistType.leadingAnchor.constraint(equalTo: filesTextLabel.leadingAnchor),
             gistType.trailingAnchor.constraint(equalTo: filesTextLabel.trailingAnchor)
         ])
-    }
-    
-    /// Constrols the visibility of the feedback
-    func formattFiles(_ files:[String : GistFile]?){
-        if let files = files?.compactMap({ $0.value }) {
-            let content = files.compactMap({
-                "\($0.filename ?? "")\n- \($0.type ?? "")"
-            })
-            gistType.text = content.joined(separator: "\n\n")
-        }
     }
 }

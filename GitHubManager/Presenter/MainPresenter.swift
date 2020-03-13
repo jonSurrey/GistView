@@ -8,29 +8,41 @@
 
 import Foundation
 
+// MARK: - MainPresenterDelegate
 protocol MainPresenterDelegate: FavoriteDelegate {
+    
+    /// Performs the request to retrieve the list of gists
     func getGists(page:Int)
+    
+    /// Increments the page to request the next results of gits
     func getListNextPage()
+    
+    /// Selects a gist at the given position of the list
     func selectGist(at position:Int)
+    
+    /// Load the list of favorited gists
     func loadFavorites()
 }
 
+// MARK: - MainPresenterDelegate
+/// Default implementation of functions in the MainPresenterDelegate so their implementation are not obligated
 extension MainPresenterDelegate {
     func getGists(page:Int) { }
     func getListNextPage() { }
     func loadFavorites() { }
 }
 
+// MARK: - MainPresenter
 class MainPresenter: MainPresenterDelegate {
     
-    ///
-    private var gists:[Gist] = []
+    /// The list of gists to be used as datasource. It should be private but we make it public for testing purposes
+    var gists:[Gist] = []
     
-    ///
-    private weak var viewController: MainViewDelegate?
+    /// Instance of the view so we can update it
+    private weak var view: MainViewDelegate?
     
-    ///
-    private var service:GistService? {
+    /// The service responsible for the requests
+    private var service: GistService? {
         didSet {
             service?.delegate = self
         }
@@ -39,7 +51,7 @@ class MainPresenter: MainPresenterDelegate {
     /// Manager for the  storage
     private var storage: StorageDelegate
     
-    ///
+    /// The current index of the results of the requests
     private var page: Int = 1 {
         didSet {
             service?.getGistList(page: page)
@@ -50,14 +62,14 @@ class MainPresenter: MainPresenterDelegate {
         self.storage = storage
     }
     
-    func attach(to viewController: MainViewDelegate, _ service:GistService) {
-        self.viewController = viewController
+    /// Binds a view and a service the to this presenter
+    func attach(to view: MainViewDelegate, _ service:GistService) {
+        self.view = view
         self.service = service
-        
     }
     
     func getGists(page: Int = 1) {
-        viewController?.showLoading()
+        view?.showLoading()
         self.page = page
     }
     
@@ -68,7 +80,7 @@ class MainPresenter: MainPresenterDelegate {
     
     func selectGist(at position: Int) {
         let gist = gists[position]
-        viewController?.goToGistDetails(gist)
+        view?.goToGistDetails(gist)
     }
     
     func favorite(_ item: GistItem) {
@@ -80,22 +92,23 @@ class MainPresenter: MainPresenterDelegate {
             item.isFavorite = false
             storage.removeFromFavorite(gist)
         }
-        viewController?.updateGistList()
+        view?.updateGistList()
     }
 }
 
+// MARK: - MainPresenter
 extension MainPresenter: GistServiceDelegate {
     
     func didReceiveGists(_ gists: [Gist]) {
-        viewController?.hideLoading()
-        viewController?.reloadGistList(formatArrayBeforeDisplay(gists))
+        view?.hideLoading()
+        view?.reloadGistList(formatArrayBeforeDisplay(gists))
     }
     
     func onRequestError(_ error: String) {
-        viewController?.hideLoading()
+        view?.hideLoading()
         if page == 1 {
-            viewController?.reloadGistList([])
-            viewController?.showFeedback(message: error)
+            view?.reloadGistList([])
+            view?.showFeedback(message: error)
         }
     }
     
@@ -103,20 +116,20 @@ extension MainPresenter: GistServiceDelegate {
         if page == 1{
             gists = storage.loadCache()
             if gists.isEmpty {
-                viewController?.showFeedback(message: "It seems you are not connected to the internet")
+                view?.showFeedback(message: "It seems you are not connected to the internet")
             }
-            viewController?.reloadGistList(formatArrayBeforeDisplay(gists))
+            view?.reloadGistList(formatArrayBeforeDisplay(gists))
         }
-        viewController?.hideLoading()
+        view?.hideLoading()
     }
     
-    ///
+    /// Converts a given [Gist] to [GistItem]
     private func formatArrayBeforeDisplay(_ result: [Gist]) -> [GistItem] {
         if page == 1 {
             storage.addToCache(result)
             gists = result
             if gists.isEmpty {
-                viewController?.showFeedback(message: "Ops... Something went wrong. Please, try again.")
+                view?.showFeedback(message: "Ops... Something went wrong. Please, try again.")
                 return []
             }
         } else {

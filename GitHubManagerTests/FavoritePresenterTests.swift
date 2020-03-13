@@ -12,46 +12,48 @@ import XCTest
 class FavoritePresenterTests: XCTestCase {
 
     var view: MainViewDelegate!
-    var service: ServiceMock!
     var storage: StorageDelegate!
-    var presenter: MainPresenter!
+    var sut: FavoritePresenter!
     
     override func setUp() {
-        view      = MainViewMock()
-        service   = ServiceMock()
-        storage   = StorageMock()
-        presenter = FavoritePresenter(storage)
-        
-        presenter.attach(to: view, service)
+        configure(with: [Gist(id: "1"), Gist(id: "2")])
     }
     
-    func testGetGists(){
-        presenter.getGists()
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
-    }
-    
-    func testGetNextPageOfItems(){
-        presenter.getGists(page: 2)
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
-    }
-    
-    func testSelectGistFromItems(){
-        presenter.selectGist(at: 2)
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
+    private func configure(with items: [Gist]) {
+        view = MainViewMock()
+        storage = StorageMock(favorites: items)
+        sut = FavoritePresenter(storage)
+        sut.attach(to: view)
     }
     
     func testLoadFavoriteGists(){
-        presenter.loadFavorites()
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
+        sut.loadFavorites()
+        XCTAssertFalse(sut.gists.isEmpty, "The list of gists should not be empty after loading the favorites")
+    }
+    
+    func testLoadFavoriteGistsIsEmpty(){
+        configure(with: [])
+        sut.loadFavorites()
+        XCTAssertTrue(sut.gists.isEmpty, "The list of gists should be empty after loading the favorites")
     }
     
     func testAddGistToFavorite(){
-        presenter.favorite()
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
+        let item = GistItem(Gist(id: "10"))
+        sut.favorite(item)
+        sut.loadFavorites()
+        
+        let result = sut.gists.contains(where: { $0.id == "10" })
+        
+        XCTAssertTrue(result, "The gist item with id ``10`` should be in the gist list, but it is not")
     }
     
     func testRemoveGistFromFavorite(){
-        presenter.favorite()
-        XCTAssertFalse(presenter.gists.isEmpty, "The list of movies should not be empty after the request")
+        let item = GistItem(Gist(id: "2"))
+        sut.favorite(item)
+        sut.loadFavorites()
+        
+        let result = sut.gists.contains(where: { $0.id == "2" })
+        
+        XCTAssertFalse(result, "The gist item with id ``2`` should not be in the gist list, but it is")
     }
 }

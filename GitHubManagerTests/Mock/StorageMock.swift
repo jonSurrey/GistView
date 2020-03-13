@@ -14,6 +14,8 @@ class StorageMock: StorageDelegate {
     private var cache:[Gist]     = []
     private var favorites:[Gist] = []
     
+    init() { }
+    
     init(cache: [Gist]) {
         self.cache = cache
     }
@@ -30,25 +32,25 @@ class StorageMock: StorageDelegate {
         return cache
     }
     
-    func addToCache(_ gist:[Gist]) {
-        cache.append(gist)
+    func addToCache(_ gist: [Gist]) {
+        cache.append(contentsOf: gist)
     }
 
     func loadFavorites() -> [Gist] {
         return favorites
     }
 
-    func addToFavorite(_ gist:Gist) {
+    func addToFavorite(_ gist: Gist) {
         favorites.append(gist)
     }
 
-    func removeFromFavorite(_ gist:Gist) {
+    func removeFromFavorite(_ gist: Gist) {
         favorites.removeAll(where: {
             $0.id == gist.id
         })
     }
     
-    func isGistFavorite(_ gist:Gist) -> Bool {
+    func isGistFavorite(_ gist: Gist) -> Bool {
         let isFavorite = favorites.first(where: { $0.id == gist.id })
         return isFavorite != nil ? true : false
     }

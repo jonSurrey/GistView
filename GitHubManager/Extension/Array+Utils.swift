@@ -10,6 +10,7 @@ import Foundation
 
 extension Array where Element:Equatable {
     
+    /// Removes identical elements of the array
     func removeDuplicates() -> [Element] {
         var result = [Element]()
         for value in self {

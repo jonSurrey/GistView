@@ -8,6 +8,16 @@
 
 import Foundation
 
+class GistItem: Codable {
+    var gist:Gist
+    var isFavorite:Bool
+    
+    init(_ gist: Gist, isFavorite: Bool = false) {
+        self.gist = gist
+        self.isFavorite = isFavorite
+    }
+}
+
 struct Gist:Codable {
     
     let id: String?
@@ -16,7 +26,7 @@ struct Gist:Codable {
     let createdAt: String?
     let description: String?
     
-    init(_ id: String = nil, _ owner: Owner? = nil, _ files: [String:GistFile]? = nil, _ createdAt: String? = nil, _ description: String? = nil) {
+    init(id: String? = nil, _ owner: Owner? = nil, _ files: [String:GistFile]? = nil, _ createdAt: String? = nil, _ description: String? = nil) {
         self.id = id
         self.owner = owner
         self.files = files

@@ -31,7 +31,7 @@ protocol StorageDelegate {
     func removeFromFavorite(_ gist: Gist)
 
     /// Checks if a Gist exists in the favorite list
-    func isGistFavorite(_ gist:Gist) -> Bool
+    func isGistFavorite(_ gist: Gist) -> Bool
 }
 
 // MARK: - StorageKey
@@ -112,49 +112,5 @@ extension Storage{
         guard let data = try? JSONEncoder().encode(gists) else { return }
         let json = String(data: data, encoding: .utf8)
         defaults.set(json, forKey: storageKey.value)
-    }
-}
-
-
-
-class StorageMock: StorageDelegate {
-    
-    private var cache: [Gist]
-    private var favorites: [Gist]
-    
-    init(_ cache: [Gist], _ favorites: [Gist]) {
-        self.cache = cache
-        self.favorites = favorites
-    }
-    
-    func clearCache() {
-        cache = []
-    }
-    
-    func loadCache() -> [Gist] {
-        return cache
-    }
-    
-    func addToCache(_ gist:[Gist]) {
-        cache = gist
-    }
-
-    func loadFavorites() -> [Gist] {
-        return favorites
-    }
-
-    func addToFavorite(_ gist:Gist) {
-        favorites.append(gist)
-    }
-
-    func removeFromFavorite(_ gist:Gist) {
-        favorites.removeAll(where: {
-            $0.id == gist.id
-        })
-    }
-    
-    func isGistFavorite(_ gist:Gist) -> Bool {
-        let isFavorite = favorites.first(where: { $0.id == gist.id })
-        return isFavorite != nil ? true : false
     }
 }

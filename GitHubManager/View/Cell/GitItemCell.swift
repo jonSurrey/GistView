@@ -8,20 +8,14 @@
 
 import UIKit
 
+// MARK: - GistItemDelegate
 protocol GistItemDelegate: class {
+    
+    /// Notifies the host that GistItem wants to be favorited
     func didTapFavorite(_ gistItem: GistItem)
 }
 
-class GistItem {
-    var gist:Gist
-    var isFavorite:Bool
-    
-    init(_ gist: Gist, isFavorite: Bool = false) {
-        self.gist = gist
-        self.isFavorite = isFavorite
-    }
-}
-
+// MARK: - GistItemCell
 class GistItemCell: UITableViewCell {
     
     weak var delegate: GistItemDelegate?
@@ -31,7 +25,6 @@ class GistItemCell: UITableViewCell {
         }
     }
     
-
     // The favorite's button
      private let favoriteIcon: UIImageView = {
         let imageView = UIImageView()
@@ -65,7 +58,7 @@ class GistItemCell: UITableViewCell {
          return label
      }()
     
-    // The user's name
+    // The user's files type
     private let gistType: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -88,6 +81,7 @@ class GistItemCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// Configures the cell
     private func setup() {
         guard let item = item else {
             return
@@ -103,6 +97,7 @@ class GistItemCell: UITableViewCell {
         }
     }
     
+    /// Action to favorite the gist
     @objc private func didTapFavorite() {
         guard let item = item else {
             return
@@ -111,6 +106,7 @@ class GistItemCell: UITableViewCell {
     }
 }
 
+// MARK: - GistItemCell
 extension GistItemCell {
     
     /// Adds the views to the main one

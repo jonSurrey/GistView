@@ -7,67 +7,85 @@
 //
 
 import XCTest
+@testable import GistViewer
 
 class StorageTests: XCTestCase {
 
-    var storage: StorageDelegate!
+    var sut: StorageDelegate!
+    
+    override func setUp() {
+        sut = StorageMock()
+    }
+    
+    private func setupFavoriteStorage() {
+        let gists:[Gist] = [Gist(id: "1"), Gist(id: "2"), Gist(id: "3"), Gist(id: "4"), Gist(id: "5")]
+        sut = StorageMock(favorites: gists)
+    }
+    
+    private func setupCacheStorage() {
+        let gists:[Gist] = [Gist(id: "1"), Gist(id: "2"), Gist(id: "3"), Gist(id: "4"), Gist(id: "5")]
+        sut = StorageMock(cache: gists)
+    }
     
     func testLoadEmptyCachedGistsList(){
-        storage = StorageMock()
-        let cache = storage.loadCache()
+        let cache = sut.loadCache()
         XCTAssertTrue(cache.isEmpty, "The cached gists list should be empty")
     }
     
     func testLoadCachedGistsList(){
-        storage = StorageMock()
-        let cache = storage.loadCache()
-        XCTAssertFalse(cache.isEmpty, "The cached movies list should NOT be empty")
+        setupCacheStorage()
+        let cache = sut.loadCache()
+        XCTAssertFalse(cache.isEmpty, "The cached gists list should NOT be empty")
     }
     
     func testClearCachedGists(){
-        storage = StorageMock()
-        storage.clearCache()
+        setupCacheStorage()
+        sut.clearCache()
         
-        /// Expected result
-        let result = storage.loadCache()
-        XCTAssertTrue(result.isEmpty, "The cached movies list should be empty after calling the clear function")
+        let result = sut.loadCache()
+        XCTAssertTrue(result.isEmpty, "The cached gists list should be empty after calling the clear function")
     }
     
     func testLoadFavoriteGists(){
-        storage = StorageMock()
-        let result = storage.loadFavorites()
-        XCTAssertEqual(result.count, 2, "The favorite list should have 2 items")
+        setupFavoriteStorage()
+        let result = sut.loadFavorites()
+        XCTAssertEqual(result.count, 5, "The favorite list should have 5 items")
     }
     
     func testAddGistToFavorites(){
-        storage = StorageMock()
-        let gist = Gist()
-        storage.addToFavorite(gist)
+        setupFavoriteStorage()
         
-        let result = storage.loadFavorites()
-        XCTAssertEqual(result.count, 3, "The favorite list should have 3 items")
+        let gist = Gist(id: "6")
+        sut.addToFavorite(gist)
+        
+        let result = sut.loadFavorites()
+        XCTAssertEqual(result.count, 6, "The favorite list should have 6 items")
     }
     
     func testRemoveGistFromFavorites(){
-        storage = StorageMock()
-        let gist = Gist()
-        storage.removeFromFavorite(gist)
+        setupFavoriteStorage()
         
-        let result = storage.loadFavorites()
-        XCTAssertEqual(result.count, 1, "The favorite list should have 3 items")
+        let gist = Gist(id: "5")
+        sut.removeFromFavorite(gist)
+        
+        let result = sut.loadFavorites()
+        XCTAssertEqual(result.count, 4, "The favorite list should have 4 items")
     }
     
     func testCheckGistIsFavorite(){
-        let gist  = Gist()
-        let result = storage.isGistFavorite(gist)
+        setupFavoriteStorage()
+        
+        let gist = Gist(id: "1")
+        let result = sut.isGistFavorite(gist)
         
         XCTAssertTrue(result, "The given gist should be a favorite")
     }
     
     func testCheckGistIsNotFavorite(){
-        let gist  = Gist()
-        let result = storage.isGistFavorite(gist)
+        setupFavoriteStorage()
         
+        let gist = Gist(id: "10")
+        let result = sut.isGistFavorite(gist)
         XCTAssertFalse(result, "The given gist should not be a favorite")
     }
 }

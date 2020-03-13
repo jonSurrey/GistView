@@ -9,24 +9,16 @@
 import Foundation
 import Alamofire
 
+// MARK: - ProviderDelegate
 protocol ProviderDelegate {
     var path: String { get }
     var headers: HTTPHeaders? { get }
     var parameters: Parameters? { get set }
 }
 
+// MARK: - GistsListProvider
 class GistsListProvider: ProviderDelegate {
     var path: String = "gists/public"
     var headers: HTTPHeaders?
     var parameters: Parameters? = ["page": 0]
-}
-
-class GistsDetailProvider: ProviderDelegate {
-    var path: String
-    var headers: HTTPHeaders?
-    var parameters: Parameters?
-    
-    init(_ id:String) {
-        path  = "gists/\(id)"
-    }
 }

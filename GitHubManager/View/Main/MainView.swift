@@ -28,7 +28,6 @@ class MainView: UIView {
         tableview.registerCell(GistItemCell.self)
         tableview.refreshControl = refreshControl
         tableview.rowHeight = UITableView.automaticDimension
-        //tableview.setcon contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
         tableview.translatesAutoresizingMaskIntoConstraints = false
         return tableview
     }()

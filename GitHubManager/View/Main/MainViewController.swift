@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK: - MainViewDelegate
 protocol MainViewDelegate:class {
     
     /// Displays the loading on the view
@@ -25,8 +26,8 @@ protocol MainViewDelegate:class {
     /// Updates the list of gist
     func updateGistList()
     
-    ///
-    func goToGistDetails(_ gist:Gist)
+    /// Redirects the current view to the DetailView
+    func goToGistDetails(_ gist: Gist)
 }
 
 extension MainViewDelegate {
@@ -49,7 +50,7 @@ class MainViewController: UIViewController {
     // Indicates if it's the first time loading the app
     private var firstTime = true
     
-    ///
+    /// ViewModel datasource for the UITableView
     private var items: [GistItem] = [] {
         didSet {
             _view.tableView.reloadData()
@@ -87,22 +88,26 @@ class MainViewController: UIViewController {
         navigationItem.rightBarButtonItems = [favorites]
     }
     
+    /// Initial configuration of the presenter
     func setupPresenter() {
         let provider = GistsListProvider()
         let service  = GistService(provider)
         presenter.attach(to: self, service)
     }
     
+    /// Action to refresh the UITableView data
     @objc private func refreshData() {
         presenter.getGists()
     }
     
+    /// Action to go to the FavoritesViewController
     @objc private func goToGistFavorites() {
         let nextViewController = FavoriteViewController()
         navigationController?.pushViewController(nextViewController, animated: true)
     }
 }
 
+// MARK: - UITableViewDelegate
 extension MainViewController: UITableViewDelegate, UITableViewDataSource, GistItemDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -126,8 +131,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource, GistIt
     }
 }
 
-
-
 // MARK: - ScrollViewDelegate
 extension MainViewController{
     
@@ -149,6 +152,7 @@ extension MainViewController{
     }
 }
 
+// MARK: - MainView implementation
 extension MainViewController: MainViewDelegate {
 
     func showLoading() {
