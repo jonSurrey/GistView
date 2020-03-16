@@ -42,7 +42,8 @@ class FavoritePresenter: MainPresenterDelegate {
     }
     
     func loadFavorites() {
-        let items = storage.loadFavorites().map { GistItem($0, isFavorite: true) }
+        gists = storage.loadFavorites()
+        let items = gists.map { GistItem($0, isFavorite: true) }
         view?.reloadGistList(items)
         if items.isEmpty {
             view?.showFeedback(message: "You have no favorites yet")
